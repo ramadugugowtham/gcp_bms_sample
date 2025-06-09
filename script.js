@@ -32,14 +32,38 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function bookTicket(eventTitle) {
-  alert(`You have booked a ticket for ${eventTitle}!`);
+const { Client } = require('pg');
+
+// Configure PostgreSQL client
+const client = new Client({
+  user: 'postgres',
+  host: '34.136.96.95',
+  database: 'mydatabase',
+  password: '.Ah+*+mSPq#|Xv<2',
+  port: 5432,
+});
+
+// Connect to the database
+client.connect();
+
+// Function to log events
+function logEvent(eventType, eventData) {
+  const query = 'INSERT INTO events(event_type, event_data) VALUES($1, $2)';
+  const values = [eventType, JSON.stringify(eventData)];
+
+  client.query(query, values, (err, res) => {
+    if (err) {
+      console.error('Error inserting event:', err.stack);
+    } else {
+      console.log('Event logged:', res.rows);
+    }
+  });
 }
 
-// Example function to save event
-async function saveEvent(event) {
-  const query = 'INSERT INTO events (name, date, location) VALUES ($1, $2, $3)';
-  const values = [event.name, event.date, event.location];
-  await pool.query(query, values);
-}
+// Example usage
+logEvent('UserLogin', { userId: 123, status: 'success' });
+
+// Close the database connection
+client.end();
+
 
