@@ -15,9 +15,9 @@ app.use(express.static(path.join(__dirname)));
 // PostgreSQL config
 const client = new Client({
   user: 'postgres',
-  host: '34.136.96.95',
+  host: 'server public IP',
   database: 'mydatabase',
-  password: '.Ah+*+mSPq#|Xv<2',
+  password: 'encryptedpassword',
   port: 5432,
 });
 client.connect();
