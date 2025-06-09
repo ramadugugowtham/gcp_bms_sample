@@ -2,13 +2,15 @@
 const express = require('express');
 const { Client } = require('pg');
 const bodyParser = require('body-parser');
+const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname)));
 
 // PostgreSQL config
 const client = new Client({
@@ -35,6 +37,11 @@ app.post('/log-event', (req, res) => {
   });
 });
 
+// Fallback to index.html for SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
