@@ -26,44 +26,30 @@ document.addEventListener("DOMContentLoaded", () => {
       <h3>${event.title}</h3>
       <p>Date: ${event.date}</p>
       <p>Location: ${event.location}</p>
-      <button onclick="bookTicket('${event.title}')">Book Now</button>
+      <button>Book Now</button>
     `;
+    const button = eventCard.querySelector("button");
+    button.addEventListener("click", () => {
+      fetch("http://localhost:3000/log-event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          eventType: "Booking",
+          eventData: event
+        })
+      })
+      .then(res => res.text())
+      .then(data => {
+        alert("Event logged!");
+        console.log(data);
+      })
+      .catch(err => {
+        console.error("Error logging event:", err);
+      });
+    });
+
     eventList.appendChild(eventCard);
   });
 });
-
-const { Client } = require('pg');
-
-// Configure PostgreSQL client
-const client = new Client({
-  user: 'postgres',
-  host: '34.136.96.95',
-  database: 'mydatabase',
-  password: '.Ah+*+mSPq#|Xv<2',
-  port: 5432,
-});
-
-// Connect to the database
-client.connect();
-
-// Function to log events
-function logEvent(eventType, eventData) {
-  const query = 'INSERT INTO events(event_type, event_data) VALUES($1, $2)';
-  const values = [eventType, JSON.stringify(eventData)];
-
-  client.query(query, values, (err, res) => {
-    if (err) {
-      console.error('Error inserting event:', err.stack);
-    } else {
-      console.log('Event logged:', res.rows);
-    }
-  });
-}
-
-// Example usage
-logEvent('UserLogin', { userId: 123, status: 'success' });
-
-// Close the database connection
-client.end();
-
-
