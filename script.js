@@ -35,3 +35,11 @@ document.addEventListener("DOMContentLoaded", () => {
 function bookTicket(eventTitle) {
   alert(`You have booked a ticket for ${eventTitle}!`);
 }
+
+// Example function to save event
+async function saveEvent(event) {
+  const query = 'INSERT INTO events (name, date, location) VALUES ($1, $2, $3)';
+  const values = [event.name, event.date, event.location];
+  await pool.query(query, values);
+}
+
